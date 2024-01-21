@@ -59,14 +59,13 @@ export default {
   name: "FileUploader",
   data() {
     return {
-      // 上传组件配置项，详细说明 https://github.com/simple-uploader/Uploader/blob/develop/README_zh-CN.md#uploader
       options: {
-        target: "api/filetransfer/uploadfile", // 目标上传 URL
+        target: "api/filetransfer/uploadfile", 
         chunkSize: 1024 * 1024, //  每个分片的大小
         fileParameterName: "file", //  上传文件时文件的参数名，默认 file
         maxChunkRetries: 3, //  并发上传数，默认 3
         testChunks: true, //  是否开启分片已存在于服务器的校验
-        // 服务器分片校验函数，秒传及断点续传基础
+        // 秒传及断点续传
         checkChunkUploadedByResponse: function (chunk, message) {
           let data = JSON.parse(message).data;
           if (data.skipUpload) {
@@ -110,12 +109,7 @@ export default {
       this.panelShow = true; //  显示文件上传面板
       this.calculateFileMD5(file); //  计算文件MD5值
     },
-    /**
-     * 文件上传过程 回调函数
-     * @param rootFile 成功上传的文件所属的根 Uploader.File 对象，它应该包含或者等于成功上传文件
-     * @param file 当前成功的 Uploader.File 对象本身
-     * @param chunk Uploader.Chunk 实例，它就是该文件的最后一个块实例，如果你想得到请求响应码的话，chunk.xhr.status 就是
-     */
+    // 文件上传过程 回调函数
     onFileProgress(rootFile, file, chunk) {
       // 打印文件上传过程中的信息
       console.log(
@@ -124,10 +118,6 @@ export default {
         }`
       );
     },
-    /**
-     * 文件上传成功 回调函数
-     * @param responseStr 服务端响应内容，永远都是字符串
-     */
     handleFileSuccess(rootFile, file, responseStr) {
       let response = JSON.parse(responseStr);
       if (response.success) {

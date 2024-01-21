@@ -136,7 +136,6 @@ export default {
       let body = document.querySelector("body");
       if (val) {
         this.activeIndex = this.defaultActiveIndex;
-        // 挂在body下，防止组件元素有样式transform而使position: fixed失效
         body.appendChild(this.$el);
         body.style.overflow = "hidden";
         // 添加键盘Esc事件

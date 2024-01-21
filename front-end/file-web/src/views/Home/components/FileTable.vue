@@ -1,7 +1,8 @@
 <template>
-  <el-table class="file-table" :data="tableData" height="calc(100vh - 202px)" style="width: 100%"  v-loading="loading" @selection-change="handleSelectRow">
-     <!-- 勾选框 -->
-     <el-table-column type="selection" width="56" align="center"></el-table-column>
+  <el-table class="file-table" :data="tableData" height="calc(100vh - 202px)" style="width: 100%" v-loading="loading"
+    @selection-change="handleSelectRow">
+    <!-- 勾选框 -->
+    <el-table-column type="selection" width="56" align="center"></el-table-column>
     <el-table-column label prop="isDir" width="60" align="center">
       <template slot-scope="scope">
         <img :src="setFileImg(scope.row)" style="width: 30px" />
@@ -10,24 +11,16 @@
     <el-table-column prop="fileName" label="文件名">
       <template slot-scope="scope">
         <div style="cursor: pointer" @click="handleFileNameClick(scope.row)">
-            {{ scope.row.extendName ? `${scope.row.fileName}.${scope.row.extendName}` : `${scope.row.fileName}` }}
+          {{ scope.row.extendName ? `${scope.row.fileName}.${scope.row.extendName}` : `${scope.row.fileName}` }}
         </div>
       </template>
     </el-table-column>
-    <el-table-column
-      label="所在路径"
-      prop="filePath"
-      show-overflow-tooltip
-      v-if="fileType !== 0"
-    >
+    <el-table-column label="所在路径" prop="filePath" show-overflow-tooltip v-if="fileType !== 0">
       <template slot-scope="scope">
-        <div
-          style="cursor: pointer"
-          title="点击跳转"
-          @click="
-            $router.push({
-              query: { fileType: 0, filePath: scope.row.filePath }
-            })">{{ scope.row.filePath }}
+        <div style="cursor: pointer" title="点击跳转" @click="
+          $router.push({
+            query: { fileType: 0, filePath: scope.row.filePath }
+          })">{{ scope.row.filePath }}
         </div>
       </template>
     </el-table-column>
@@ -36,50 +29,29 @@
         <span>{{ scope.row.extendName ? scope.row.extendName : '文件夹' }}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="fileSize" label="大小" width="60"  v-if="selectedColumnList.includes('fileSize')">
+    <el-table-column prop="fileSize" label="大小" width="60" v-if="selectedColumnList.includes('fileSize')">
       <template slot-scope="scope">
-          <span>{{ calculateFileSize(scope.row.fileSize) }}</span>
+        <span>{{ calculateFileSize(scope.row.fileSize) }}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="uploadTime" label="修改日期" width="180" v-if="selectedColumnList.includes('uploadTime')"></el-table-column>
+    <el-table-column prop="uploadTime" label="修改日期" width="180"
+      v-if="selectedColumnList.includes('uploadTime')"></el-table-column>
     <el-table-column :width="operaColumnIsFold ? 200 : 100">
       <!-- 自定义表格头 -->
       <template slot="header">
         <span>操作</span>
-        <i
-          class="el-icon-circle-plus"
-          title="展开"
-          @click="operaColumnIsFold = true"
-        ></i>
-        <i
-          class="el-icon-remove"
-          title="折叠"
-          @click="operaColumnIsFold = false"
-        ></i>
+        <i class="el-icon-circle-plus" title="展开" @click="operaColumnIsFold = true"></i>
+        <i class="el-icon-remove" title="折叠" @click="operaColumnIsFold = false"></i>
       </template>
       <template slot-scope="scope">
         <!-- 操作列展开状态下的按钮 -->
         <div class="opera-unfold" v-if="operaColumnIsFold">
-          <el-button
-            type="text"
-            size="small"
-            @click.native="handleClickDelete(scope.row)"
-            >删除</el-button
-          >
-          <el-button
-            type="text"
-            size="small"
-            @click.native="handleClickMove(scope.row)"
-            >移动</el-button
-          >
-          <el-button
-            type="text"
-            size="small"
-            @click.native="handleClickRename(scope.row)"
-            >重命名</el-button
-          >
+          <el-button type="text" size="small" @click.native="handleClickDelete(scope.row)">删除</el-button>
+          <el-button type="text" size="small" @click.native="handleClickMove(scope.row)">移动</el-button>
+          <el-button type="text" size="small" @click.native="handleClickRename(scope.row)">重命名</el-button>
           <el-button type="text" size="small" v-if="scope.row.isDir === 0">
-            <a target="_blank" style="display: block; color: inherit" :href="`/api/filetransfer/downloadfile?userFileId=${scope.row.userFileId}`">下载</a>
+            <a target="_blank" style="display: block; color: inherit"
+              :href="`/api/filetransfer/downloadfile?userFileId=${scope.row.userFileId}`">下载</a>
           </el-button>
         </div>
         <el-dropdown trigger="click" v-else>
@@ -88,17 +60,12 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="handleClickDelete(scope.row)"
-              >删除</el-dropdown-item
-            >
-            <el-dropdown-item @click.native="handleClickMove(scope.row)"
-              >移动</el-dropdown-item
-            >
-            <el-dropdown-item @click.native="handleClickRename(scope.row)"
-              >重命名</el-dropdown-item
-            >
+            <el-dropdown-item @click.native="handleClickDelete(scope.row)">删除</el-dropdown-item>
+            <el-dropdown-item @click.native="handleClickMove(scope.row)">移动</el-dropdown-item>
+            <el-dropdown-item @click.native="handleClickRename(scope.row)">重命名</el-dropdown-item>
             <el-dropdown-item v-if="scope.row.isDir === 0">
-              <a :href="`/api/filetransfer/downloadfile?userFileId=${scope.row.userFileId}`" target="_blank" style="display: block; color: inherit">下载</a>
+              <a :href="`/api/filetransfer/downloadfile?userFileId=${scope.row.userFileId}`" target="_blank"
+                style="display: block; color: inherit">下载</a>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -113,7 +80,6 @@ import { renameFile } from '@/request/file.js' //  文件重命名
 export default {
   name: "FileTable",
   props: {
-    // 表格数据，同时需要删除原本在 data( return { } ) 中的 tableData，否则会报错
     tableData: {
       type: Array,
       required: true
@@ -164,21 +130,21 @@ export default {
   methods: {
     //  计算文件大小
     calculateFileSize(size) {
-        const B = 1024
-        const KB = Math.pow(1024, 2)
-        const MB = Math.pow(1024, 3)
-        const GB = Math.pow(1024, 4)
-        if (!size) {
-            return '_'
-        } else if (size < KB) {
-            return (size / B).toFixed(0) + 'KB'
-        } else if (size < MB) {
-            return (size / KB).toFixed(1) + 'MB'
-        } else if (size < GB) {
-            return (size / MB).toFixed(2) + 'GB'
-        } else {
-            return (size / GB).toFixed(3) + 'TB'
-        }
+      const B = 1024
+      const KB = Math.pow(1024, 2)
+      const MB = Math.pow(1024, 3)
+      const GB = Math.pow(1024, 4)
+      if (!size) {
+        return '_'
+      } else if (size < KB) {
+        return (size / B).toFixed(0) + 'KB'
+      } else if (size < MB) {
+        return (size / KB).toFixed(1) + 'MB'
+      } else if (size < GB) {
+        return (size / MB).toFixed(2) + 'GB'
+      } else {
+        return (size / GB).toFixed(3) + 'TB'
+      }
     },
     // 删除按钮 - 点击事件
     handleClickDelete(row) {
@@ -247,31 +213,31 @@ export default {
     },
     // 文件名点击事件
     handleFileNameClick(row) {
-        //  若是目录则进入目录
-        if (row.isDir) {
-            this.$router.push({
-                query: {
-                    filePath: `${row.filePath}${row.fileName}/`,
-                    fileType: 0
-                }
-            })
-        } else {
-          //  若当前点击项是图片
+      //  若是目录则进入目录
+      if (row.isDir) {
+        this.$router.push({
+          query: {
+            filePath: `${row.filePath}${row.fileName}/`,
+            fileType: 0
+          }
+        })
+      } else {
+        //  若当前点击项是图片
         const PIC = ['png', 'jpg', 'jpeg', 'gif', 'svg']
         if (PIC.includes(row.extendName)) {
-            let data = {
-                imgReviewVisible: true,
-                imgReviewList: [{
-                    fileUrl: `/api${row.fileUrl}`,
-                    downloadLink: `/api/filetransfer/downloadfile?userFileId=${row.userFileId}`,
-                    fileName: row.fileName,
-                    extendName: row.extendName
-                }],
-                activeIndex: 0
-            };
-            this.$store.commit('setImgReviewData', data);
+          let data = {
+            imgReviewVisible: true,
+            imgReviewList: [{
+              fileUrl: `/api${row.fileUrl}`,
+              downloadLink: `/api/filetransfer/downloadfile?userFileId=${row.userFileId}`,
+              fileName: row.fileName,
+              extendName: row.extendName
+            }],
+            activeIndex: 0
+          };
+          this.$store.commit('setImgReviewData', data);
         }
-        }
+      }
     },
     //  根据文件扩展名设置文件图片
     setFileImg(row) {
@@ -311,7 +277,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-// 表格操作列-表头图标样式调整
 .el-icon-circle-plus, .el-icon-remove {
   margin-left: 8px;
   cursor: pointer;
@@ -322,7 +287,6 @@ export default {
   }
 }
 .file-table {
-  // 调整滚动条样式
   >>> .el-table__body-wrapper {
     setScrollbar(8px, #EBEEF5, #909399);
   }
