@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- 左侧菜单 - 区分文件类型 -->
-    <SideMenu class="home-left" :storageValue="storageValue"></SideMenu>
+    <SideMenu class="home-left" :storageValue="storageValue" :storageMaxValue="storageMaxValue"></SideMenu>
     <!-- 右侧内容区 -->
     <div class="home-right">
       <div class="operation-wrapper">
@@ -52,6 +52,7 @@
 <script>
 import { getFileListByPath, getFileListByType } from '@/request/file.js' //  引入获取文件列表接口
 import { getFileStorage } from '@/request/file.js' //  引入查询存储空间接口
+import { getUserMaxStorage } from '@/request/file.js' // 引入查询用户存储空间接口
 
 
 import SideMenu from "./components/SideMenu.vue"; //  引入左侧菜单组件
@@ -109,6 +110,7 @@ export default {
         total: 0
       },
       storageValue: 0,
+      storageMaxValue: 0,
       // 移动文件模态框数据
       dialogMoveFile: {
         visible: false,
@@ -132,6 +134,7 @@ export default {
   },
   mounted() {
     this.getFileData(); //  获取文件列表
+    this.getMaxStorageValue(); // 获取用户总空间大小
   },
   methods: {
     // 获取文件列表
@@ -150,11 +153,21 @@ export default {
     // 获取文件占用空间
     getStorageValue() {
       getFileStorage().then((res) => {
-        //    调用接口
         if (res.success) {
           this.storageValue = res.data ? res.data : 0
         } else {
           this.$message.error(res.message)
+        }
+      })
+    },
+    // 获取用户总空间大小
+    getMaxStorageValue() {
+      getUserMaxStorage().then((res) => {
+        if(res.success) {
+          this.storageMaxValue = res.data ? res.data : 0;
+          console.log(res.data);
+        } else {
+          this.$message.error(res.message);
         }
       })
     },

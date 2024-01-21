@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ljx.file.common.RestResult;
+import com.ljx.file.mapper.StorageMapper;
 import com.ljx.file.mapper.UserMapper;
+import com.ljx.file.model.Storage;
 import com.ljx.file.model.User;
 import com.ljx.file.service.UserService;
 import com.ljx.file.util.DateUtil;
@@ -31,6 +33,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     private UserMapper userMapper;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private StorageMapper storageMapper;
     @Override
     public RestResult<String> registerUser(User user) {
         String telephone = user.getTelephone();
@@ -48,6 +52,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         user.setSalt(salt);
         user.setRegisterTime(DateUtil.getCurrentTime());
         int success = userMapper.insert(user);
+        Storage storage = new Storage();
+        storage.setUserId(user.getUserId());
+        storage.setStorageSize((long) 1024*1024*1024);
+        storageMapper.insert(storage);
         if(success != 1) {
             return RestResult.fail().message("注册失败，请检查输入信息!");
         }

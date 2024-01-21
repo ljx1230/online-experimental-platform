@@ -8,6 +8,7 @@ export const getFileListByType = (p) => get("/file/selectfilebyfiletype", p);
 export const createFile = (p) => post("/file/createfile", p);
 // 获取存储空间已占用大小
 export const getFileStorage = (p) => get("/filetransfer/getstorage", p);
+export const getUserMaxStorage = (p) => get("/filetransfer/getuserstorage", p);
 // 获取文件夹列表
 export const getFileTree = (p) => get('/file/getfiletree', p);
 // 单文件操作接口

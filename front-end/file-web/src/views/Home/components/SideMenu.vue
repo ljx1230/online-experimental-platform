@@ -72,11 +72,14 @@ export default {
     storageValue: {
       type: Number,
       required: true
-    }
+    },
+    storageMaxValue : {
+      type: Number,
+      required: true
+    },
   },
   data() {
     return {
-      storageMaxValue: Math.pow(1024, 3) * 1, //  最大存储容量，1GB
       storageColor: [
         { color: '#67C23A', percentage: 50 },
         { color: '#E6A23C', percentage: 80 },

@@ -1,8 +1,10 @@
 package com.ljx.file.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ljx.file.common.RestResult;
 import com.ljx.file.dto.DownloadFileDTO;
 import com.ljx.file.dto.UploadFileDTO;
+import com.ljx.file.mapper.StorageMapper;
 import com.ljx.file.model.File;
 import com.ljx.file.model.Storage;
 import com.ljx.file.model.User;
@@ -46,6 +48,9 @@ public class FiletransferController {
     @Autowired
     private FiletransferService filetransferService;
 
+    @Autowired
+    private StorageMapper storageMapper;
+
     @Operation(summary = "极速上传", description = "校验文件MD5判断文件是否存在，如果存在直接上传成功并返回skipUpload=true，如果不存在返回skipUpload=false需要再次调用该接口的POST方法", tags = {"filetransfer"})
     @GetMapping("/uploadfile")
     public RestResult uploadFileSpeed(UploadFileDTO uploadFileDto, @RequestHeader("token") String token) {
@@ -81,4 +86,16 @@ public class FiletransferController {
         return RestResult.success().data(storageSize);
     }
 
+    @Operation(summary = "获取用户总空间大小",description = "获取用户最大存储空间", tags = {"filetransfer"})
+    @GetMapping("/getuserstorage")
+    public RestResult getUserStorage(@RequestHeader("token") String token) {
+        User loginUser = userService.getUserByToken(token);
+        if(loginUser == null) {
+            return RestResult.fail().message("未登录");
+        }
+        LambdaQueryWrapper<Storage> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Storage::getUserId,loginUser.getUserId());
+        Long userMaxStorage = storageMapper.selectOne(wrapper).getStorageSize();
+        return RestResult.success().data(userMaxStorage);
+    }
 }
